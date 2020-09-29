@@ -2,80 +2,79 @@
 
 const MESSAGES = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 const NAMES = ['Люк Скайвокер', 'Оби-Ван Кеноби', 'Лея', 'Хан Соло', 'Дарт Вейдер', 'Йода', 'R2-D2', 'Воин Дракона', 'Джекки Чан', 'Бронепух', 'Памелла Андерсон'];
-const MOKIES_COUNT = 25;
+const PHOTOS_COUNT = 25;
 const AVATAR_COUNT = 6;
+const MESSAGES_COUNT = 2;
 const COMMENT_COUNT = 9;
 
 const pictureList = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-let getRandomNumberFromMinToMax = function (min, max) {
+let getRandomNumber = function (min, max) {
   let random = Math.floor((Math.random() * (max - min)) + min);
   return random;
 };
 
-const getRandomMessge = function (count = getRandomNumberFromMinToMax(0, 2)) {
-  if (count === 0) {
-    return MESSAGES[getRandomNumberFromMinToMax(0, MESSAGES.length)];
-  } else {
-    return MESSAGES[getRandomNumberFromMinToMax(0, MESSAGES.length)] + MESSAGES[getRandomNumberFromMinToMax(0, MESSAGES.length)];
+const getRandomMessage = function () {
+  let randomMessages = [];
+  for (let i = 0; i < MESSAGES_COUNT; i++) {
+    let random = getRandomNumber(0, MESSAGES.length + 1);
+    let randomMessage = MESSAGES[random];
+    if (!randomMessages.includes(randomMessage)) {
+      randomMessages.push(randomMessage);
+    }
   }
+  return randomMessages.join(' ');
 };
 
 const getComment = function () {
   let comment = {
-    name: NAMES[getRandomNumberFromMinToMax(0, NAMES.length)],
-    avatar: 'img/avatar-' + getRandomNumberFromMinToMax(1, AVATAR_COUNT + 1) + '.svg',
-    message: getRandomMessge()
+    name: NAMES[getRandomNumber(0, NAMES.length)],
+    avatar: 'img/avatar-' + getRandomNumber(1, AVATAR_COUNT + 1) + '.svg',
+    message: getRandomMessage()
   };
   return comment;
 };
 
-const getComments = function (count = getRandomNumberFromMinToMax(1, COMMENT_COUNT + 1)) {
+const getComments = function (count = getRandomNumber(1, COMMENT_COUNT + 1)) {
   let comments = [];
-  for (let i = 0; i <= count - 1; i++) {
+  for (let i = 0; i < count; i++) {
     comments.push(getComment());
   }
   return comments;
 };
 
-const generateMokie = function () {
-  let mokie = {
-    photo: 'photos/' + 1 + '.jpg',
-    likes: getRandomNumberFromMinToMax(15, 201),
-    comments: getComments(),
-    description: ''
-  };
-  return mokie;
-};
-
-const generateMokies = function (count = MOKIES_COUNT) {
-  let mokies = [];
+const generatePhotos = function (count = PHOTOS_COUNT) {
+  let pictures = [];
   for (let i = 0; i <= count - 1; i++) {
-    let mokie = generateMokie();
-    mokie.photo = 'photos/' + (i + 1) + '.jpg';
-    mokies.push(mokie);
+    let picture = {
+      photo: 'photos/' + (i + 1) + '.jpg',
+      likes: getRandomNumber(15, 201),
+      comments: getComments(),
+      description: ''
+    };
+    pictures.push(picture);
   }
-  return mokies;
+  return pictures;
 };
 
-const renderMokie = function (mokie) {
-  let mokieSimularItem = pictureTemplate.cloneNode(true);
-  mokieSimularItem.querySelector('.picture__img').src = mokie.photo;
-  mokieSimularItem.querySelector('.picture__likes').textContent = mokie.likes;
-  mokieSimularItem.querySelector('.picture__comments').textContent = mokie.comments.length;
-  return mokieSimularItem;
+const renderPhoto = function (picture) {
+  let pictureSimularItem = pictureTemplate.cloneNode(true);
+  pictureSimularItem.querySelector('.picture__img').src = picture.photo;
+  pictureSimularItem.querySelector('.picture__likes').textContent = picture.likes;
+  pictureSimularItem.querySelector('.picture__comments').textContent = picture.comments.length;
+  return pictureSimularItem;
 };
 
-const renderMokies = function (mokies) {
+const renderPhotos = function (pictures) {
   let fragment = document.createDocumentFragment();
 
-  for (let i = 0; i < mokies.length; i++) {
-    fragment.appendChild(renderMokie(mokies[i]));
+  for (let i = 0; i < pictures.length; i++) {
+    fragment.appendChild(renderPhoto(pictures[i]));
   }
   pictureList.appendChild(fragment);
 };
 
-const mokies = generateMokies();
-renderMokies(mokies);
+const pictures = generatePhotos();
+renderPhotos(pictures);
 
