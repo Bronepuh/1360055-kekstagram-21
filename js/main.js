@@ -18,7 +18,7 @@ let getRandomNumber = function (min, max) {
 const getRandomMessage = function () {
   let randomMessages = [];
   for (let i = 0; i < MESSAGES_COUNT; i++) {
-    let random = getRandomNumber(0, MESSAGES.length + 1);
+    let random = getRandomNumber(0, MESSAGES.length);
     let randomMessage = MESSAGES[random];
     if (!randomMessages.includes(randomMessage)) {
       randomMessages.push(randomMessage);
@@ -78,3 +78,63 @@ const renderPhotos = function (pictures) {
 const pictures = generatePhotos();
 renderPhotos(pictures);
 
+const bigPicture = document.querySelector('.big-picture');
+const socialCommentsList = document.querySelector('.social__comments');
+
+// удаляю все комментарии вручную
+const socialItemDel = function () {
+  const socialItem = socialCommentsList.querySelector('.social__comment');
+  socialItem.parentNode.removeChild(socialItem);
+};
+
+socialItemDel();
+socialItemDel();
+
+bigPicture.classList.remove('hidden');
+bigPicture.querySelector('img').src = pictures[0].photo;
+bigPicture.querySelector('.likes-count').textContent = pictures[0].likes;
+bigPicture.querySelector('.comments-count').textContent = pictures[0].comments.length;
+bigPicture.querySelector('.social__caption').textContent = pictures[0].description;
+
+const newCommentItem = function () {
+  let li = document.createElement('li');
+  li.classList.add('social__comment');
+  return li;
+};
+
+const newCommentImg = function (count) {
+  let img = document.createElement('img');
+  img.classList.add('social__picture');
+  img.src = pictures[0].comments[count].avatar;
+  img.alt = pictures[0].comments[count].name;
+  img.style.width = 35 + 'px';
+  img.style.height = 35 + 'px';
+  return img;
+};
+
+const newCommentText = function (count) {
+  let p = document.createElement('p');
+  p.classList.add('social__text');
+  p.textContent = pictures[0].comments[count].message;
+  return p;
+};
+
+const newCommentElements = function () {
+  for (let i = 0; i < pictures[0].comments.length; i++) {
+    let newComment = newCommentItem();
+    newComment.append(newCommentImg(i));
+    newComment.append(newCommentText(i));
+    socialCommentsList.append(newComment);
+  }
+  return socialCommentsList;
+};
+
+// заполняю комментари из моки №1
+newCommentElements();
+
+const socialCommentCount = bigPicture.querySelector('.social__comment-count');
+socialCommentCount.classList.add('hidden');
+const commentsLoader = bigPicture.querySelector('.comments-loader');
+commentsLoader.classList.add('hidden');
+const body = document.querySelector('body');
+body.classList.add('modal-open');
