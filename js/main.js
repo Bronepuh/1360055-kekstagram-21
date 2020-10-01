@@ -79,58 +79,55 @@ const pictures = generatePhotos();
 renderPhotos(pictures);
 
 const bigPicture = document.querySelector('.big-picture');
-const socialCommentsList = document.querySelector('.social__comments');
-
-// удаляю все комментарии вручную
-const socialItemDel = function () {
-  const socialItem = socialCommentsList.querySelector('.social__comment');
-  socialItem.parentNode.removeChild(socialItem);
-};
-
-socialItemDel();
-socialItemDel();
 
 bigPicture.classList.remove('hidden');
-bigPicture.querySelector('img').src = pictures[0].photo;
-bigPicture.querySelector('.likes-count').textContent = pictures[0].likes;
-bigPicture.querySelector('.comments-count').textContent = pictures[0].comments.length;
-bigPicture.querySelector('.social__caption').textContent = pictures[0].description;
 
-const newCommentItem = function () {
+const socialCommentsList = document.querySelector('.social__comments');
+
+const createCommentElement = function () {
   let li = document.createElement('li');
   li.classList.add('social__comment');
   return li;
 };
 
-const newCommentImg = function (count) {
+const createCommentImg = function (count, obj) {
   let img = document.createElement('img');
   img.classList.add('social__picture');
-  img.src = pictures[0].comments[count].avatar;
-  img.alt = pictures[0].comments[count].name;
-  img.style.width = 35 + 'px';
-  img.style.height = 35 + 'px';
+  img.src = obj.comments[count].avatar;
+  img.alt = obj.comments[count].name;
+  img.style.width = '35px';
+  img.style.height = '35px';
   return img;
 };
 
-const newCommentText = function (count) {
+const createCommentText = function (count, obj) {
   let p = document.createElement('p');
   p.classList.add('social__text');
-  p.textContent = pictures[0].comments[count].message;
+  p.textContent = obj.comments[count].message;
   return p;
 };
 
-const newCommentElements = function () {
-  for (let i = 0; i < pictures[0].comments.length; i++) {
-    let newComment = newCommentItem();
-    newComment.append(newCommentImg(i));
-    newComment.append(newCommentText(i));
+const createCommentList = function (obj) {
+  for (let i = 0; i < obj.comments.length; i++) {
+    let newComment = createCommentElement(obj);
+    newComment.append(createCommentImg(i, obj));
+    newComment.append(createCommentText(i, obj));
     socialCommentsList.append(newComment);
   }
   return socialCommentsList;
 };
 
+const createNewPicture = function (obj) {
+  socialCommentsList.innerHTML = '';
+  bigPicture.querySelector('img').src = obj.photo;
+  bigPicture.querySelector('.likes-count').textContent = obj.likes;
+  bigPicture.querySelector('.comments-count').textContent = obj.comments.length;
+  bigPicture.querySelector('.social__caption').textContent = obj.description;
+  createCommentList(obj);
+};
+
 // заполняю комментари из моки №1
-newCommentElements();
+createNewPicture(pictures[0]);
 
 const socialCommentCount = bigPicture.querySelector('.social__comment-count');
 socialCommentCount.classList.add('hidden');
