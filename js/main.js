@@ -84,46 +84,42 @@ const bigPicture = document.querySelector('.big-picture');
 
 const socialCommentsList = document.querySelector('.social__comments');
 
-const createCommentElement = function () {
-  let li = document.createElement('li');
+const generateCommentElement = function (comment) {
+  const li = document.createElement('li');
   li.classList.add('social__comment');
+
+  const img = document.createElement('img');
+  img.classList.add('social__picture');
+  img.src = comment.avatar;
+  img.alt = comment.name;
+  img.style.width = '35px';
+  img.style.height = '35px';
+
+  const p = document.createElement('p');
+  p.classList.add('social__text');
+  p.textContent = comment.message;
+
+  li.append(img);
+  li.append(p);
   return li;
 };
 
-const createCommentImg = function (count, obj) {
-  let img = document.createElement('img');
-  img.classList.add('social__picture');
-  img.src = obj.comments[count].avatar;
-  img.alt = obj.comments[count].name;
-  img.style.width = '35px';
-  img.style.height = '35px';
-  return img;
-};
-
-const createCommentText = function (count, obj) {
-  let p = document.createElement('p');
-  p.classList.add('social__text');
-  p.textContent = obj.comments[count].message;
-  return p;
-};
-
-const createCommentList = function (obj) {
-  for (let i = 0; i < obj.comments.length; i++) {
-    let newComment = createCommentElement(obj);
-    newComment.append(createCommentImg(i, obj));
-    newComment.append(createCommentText(i, obj));
-    socialCommentsList.append(newComment);
+const generateCommentList = function (comments) {
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < comments.length; i++) {
+    let newComment = generateCommentElement(comments[i]);
+    fragment.append(newComment);
   }
-  return socialCommentsList;
+  return fragment;
 };
 
-const createNewPicture = function (obj) {
+const createNewPicture = function (picture) {
+  bigPicture.querySelector('img').src = picture.photo;
+  bigPicture.querySelector('.likes-count').textContent = picture.likes;
+  bigPicture.querySelector('.comments-count').textContent = picture.comments.length;
+  bigPicture.querySelector('.social__caption').textContent = picture.description;
   socialCommentsList.innerHTML = '';
-  bigPicture.querySelector('img').src = obj.photo;
-  bigPicture.querySelector('.likes-count').textContent = obj.likes;
-  bigPicture.querySelector('.comments-count').textContent = obj.comments.length;
-  bigPicture.querySelector('.social__caption').textContent = obj.description;
-  createCommentList(obj);
+  socialCommentsList.append(generateCommentList(picture.comments));
 };
 
 // заполняю комментари из моки №1
@@ -139,14 +135,14 @@ const body = document.querySelector('body');
 // module4-task1
 // открытие и закрытие окна для редактирования загружаемой фотографии
 const imgUploadForm = document.querySelector('.img-upload__form');
-const uploadFile = imgUploadForm.querySelector('#upload-file');
+const uploadFileInput = imgUploadForm.querySelector('#upload-file');
 const imgUploadOverlay = imgUploadForm.querySelector('.img-upload__overlay');
 const imgUploadOverlayCancel = imgUploadOverlay.querySelector('.img-upload__cancel');
 
 const onUploadPopupEscPress = function (evt) {
   if (evt.key === 'Escape') {
     evt.preventDefault();
-    uploadFile.value = '';
+    uploadFileInput.value = '';
     imgUploadOverlay.classList.add('hidden');
     body.classList.remove('modal-open');
   }
@@ -158,7 +154,7 @@ const openUploadPopup = function () {
   document.addEventListener('keydown', onUploadPopupEscPress);
 };
 
-uploadFile.addEventListener('change', function () {
+uploadFileInput.addEventListener('change', function () {
   openUploadPopup();
 });
 
@@ -183,17 +179,19 @@ const controlInput = imgUploadScaleContol.querySelector('.scale__control--value'
 const imgUploadPreview = imgUploadForm.querySelector('.img-upload__preview img');
 
 const getNumberOfInput = function () {
-  let str = controlInput.value;
-  let strArr = str.split('%');
-  let number = strArr[0];
+  let number = parseInt(controlInput.value, 10);
   return Number(number);
+};
+
+const changeSizePreview = function () {
+  imgUploadPreview.style = 'transform: scale(' + getNumberOfInput() / 100 + ')';
 };
 
 const pushControlSmaller = function (value = MIN_VALUE) {
   let number = getNumberOfInput();
   if (number > value) {
     controlInput.value = String((number - STEP) + '%');
-    imgUploadPreview.style = 'transform: scale(' + getNumberOfInput() / 100 + ')';
+    changeSizePreview();
   }
   return controlInput.value;
 };
@@ -202,7 +200,7 @@ const pushControlBigger = function (value = MAX_VALUE) {
   let number = getNumberOfInput();
   if (number < value) {
     controlInput.value = String((number + STEP) + '%');
-    imgUploadPreview.style = 'transform: scale(' + getNumberOfInput() / 100 + ')';
+    changeSizePreview();
   }
   return controlInput.value;
 };
@@ -258,47 +256,26 @@ effectList.addEventListener('change', function () {
 const getEffectValue = function () {
   const lineWidthInPx = 452;
   const lineWidthInPercent = 100;
+  const maxBlurValue = 4 / lineWidthInPercent;
+  const maxBrightnessValue = 3 / lineWidthInPercent;
 
   effectLevelLine.addEventListener('mouseup', function (evt) {
     effectLevelPin.blur();
     effectLevelLine.focus();
-    let e = Math.floor(evt.offsetX / (lineWidthInPx / lineWidthInPercent));
-    effectLevelPin.style = "left: " + e + "%";
-    effectLevelDepth.style = "width: " + e + "%";
-    let getBlur = function (number = e) {
-      let px = 0;
-      if (number < 25) {
-        px = 0;
-      } else if (number > 25 && number < 50) {
-        px = 1;
-      } else if (number > 50 && number < 75) {
-        px = 2;
-      } else {
-        px = 3;
-      }
-      return px;
-    };
-    let getBrightness = function (number = e) {
-      let value = 0;
-      if (number < 33) {
-        value = 1;
-      } else if (number > 33 && number < 66) {
-        value = 2;
-      } else {
-        value = 3;
-      }
-      return value;
-    };
+    let countValue = Math.floor(evt.offsetX / (lineWidthInPx / lineWidthInPercent));
+    effectLevelPin.style = "left: " + countValue + "%";
+    effectLevelDepth.style = "width: " + countValue + "%";
+
     if (imgUploadPreview.classList.contains('effects__preview--chrome')) {
-      imgUploadPreview.style = "filter: grayscale(" + e / 100 + ")";
+      imgUploadPreview.style = "filter: grayscale(" + countValue / lineWidthInPercent + ")";
     } else if (imgUploadPreview.classList.contains('effects__preview--sepia')) {
-      imgUploadPreview.style = "filter: sepia(" + e / 100 + ")";
+      imgUploadPreview.style = "filter: sepia(" + countValue / lineWidthInPercent + ")";
     } else if (imgUploadPreview.classList.contains('effects__preview--marvin')) {
-      imgUploadPreview.style = "filter: invert(" + e + "%)";
+      imgUploadPreview.style = "filter: invert(" + countValue + "%)";
     } else if (imgUploadPreview.classList.contains('effects__preview--phobos')) {
-      imgUploadPreview.style = "filter: blur(" + getBlur() + "px)";
+      imgUploadPreview.style = "filter: blur(" + countValue * maxBlurValue + "px)";
     } else if (imgUploadPreview.classList.contains('effects__preview--heat')) {
-      imgUploadPreview.style = "filter: brightness(" + getBrightness() + ")";
+      imgUploadPreview.style = "filter: brightness(" + countValue * maxBrightnessValue + ")";
     }
     return effectLevelPin.style;
   });
