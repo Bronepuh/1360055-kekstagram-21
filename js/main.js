@@ -180,7 +180,7 @@ const imgUploadPreview = imgUploadForm.querySelector('.img-upload__preview img')
 
 const getNumberOfInput = function () {
   let number = parseInt(controlInput.value, 10);
-  return Number(number);
+  return number;
 };
 
 const changeSizePreview = function () {
@@ -220,37 +220,45 @@ const effectLevelLine = UploadEffectLevel.querySelector('.effect-level__line');
 const effectLevelPin = UploadEffectLevel.querySelector('.effect-level__pin');
 const effectLevelDepth = UploadEffectLevel.querySelector('.effect-level__depth');
 
-const resetValues = function () {
-  let effect = effectList.querySelector('.effects__radio:checked');
+const resetValues = function (evt) {
+  let effect = evt.target.value;
   imgUploadPreview.className = '';
-  imgUploadPreview.classList.add('effects__preview--' + effect.value);
-  if (effect.value === 'none') {
-    UploadEffectLevel.style = 'display: none';
+  imgUploadPreview.classList.add('effects__preview--' + effect);
+  if (effect === 'none') {
+    UploadEffectLevel.classList.add('hidden');
   } else {
-    UploadEffectLevel.style = 'display: flex';
+    UploadEffectLevel.classList.remove('hidden');
   }
 
   effectLevelPin.style = "left: " + 100 + "%";
   effectLevelDepth.style = "width: " + 100 + "%";
 
-  if (imgUploadPreview.classList.contains('effects__preview--chrome')) {
-    imgUploadPreview.style = "filter: grayscale(" + 1 + ")";
-  } else if (imgUploadPreview.classList.contains('effects__preview--sepia')) {
-    imgUploadPreview.style = "filter: sepia(" + 1 + ")";
-  } else if (imgUploadPreview.classList.contains('effects__preview--marvin')) {
-    imgUploadPreview.style = "filter: invert(" + 100 + "%)";
-  } else if (imgUploadPreview.classList.contains('effects__preview--phobos')) {
-    imgUploadPreview.style = "filter: blur(" + 3 + "px)";
-  } else if (imgUploadPreview.classList.contains('effects__preview--heat')) {
-    imgUploadPreview.style = "filter: brightness(" + 3 + ")";
-  } else {
-    imgUploadPreview.style = "";
+  switch (effect) {
+    case 'chrome':
+      imgUploadPreview.style = "filter: grayscale(" + 1 + ")";
+      break;
+    case 'sepia':
+      imgUploadPreview.style = "filter: sepia(" + 1 + ")";
+      break;
+    case 'invert':
+      imgUploadPreview.style = "filter: invert(" + 100 + "%)";
+      break;
+    case 'blur':
+      imgUploadPreview.style = "filter: blur(" + 3 + "px)";
+      break;
+    case 'brightness':
+      imgUploadPreview.style = "filter: brightness(" + 3 + ")";
+      break;
+    default:
+      imgUploadPreview.style = "";
+      break;
   }
+
   return effectLevelPin.style;
 };
 
-effectList.addEventListener('change', function () {
-  resetValues();
+effectList.addEventListener('change', function (evt) {
+  resetValues(evt);
 });
 
 const getEffectValue = function () {
@@ -303,6 +311,8 @@ const imgUploadDescription = imgUploadText.querySelector('.text__description');
 textHashtags.addEventListener('input', function () {
   const inputValue = textHashtags.value;
   const tagsArr = inputValue.split(' ');
+  const minValue = 2;
+  const maxValue = 20;
 
   const generateUnicArr = function (arr = tagsArr) {
     let newArr = [];
@@ -316,21 +326,17 @@ textHashtags.addEventListener('input', function () {
   };
 
   const checkValidationInput = function (newArr = generateUnicArr(), arr = tagsArr) {
-    const minValue = 2;
-    const maxValue = 20;
-
     for (let i = 0; i < arr.length; i++) {
-
-      let tagArr = arr[i].split('');
-      let sharp = tagArr.shift();
-
-      if (sharp !== String('#')) {
+      let tag = arr[i];
+      let sharp = tag.substring(0, 1);
+      let tagHatchback = tag.substring(1, tag.length);
+      if (sharp !== '#') {
         textHashtags.setCustomValidity('ХэшТеги должны начинаться с "#"');
-      } else if (tagArr.includes('#') || tagArr.includes('@') || tagArr.includes('$') || tagArr.includes('<') || tagArr.includes('>') || tagArr.includes('%') || tagArr.includes('.') || tagArr.includes('!') || tagArr.includes('?') || tagArr.includes('"') || tagArr.includes('\'') || tagArr.includes('&') || tagArr.includes('|') || tagArr.includes('\\') || tagArr.includes('§') || tagArr.includes('¶') || tagArr.includes('+') || tagArr.includes('-') || tagArr.includes('=') || tagArr.includes('*') || tagArr.includes('/')) {
+      } else if (tagHatchback.includes('#') || tagHatchback.includes('@') || tagHatchback.includes('$') || tagHatchback.includes('<') || tagHatchback.includes('>') || tagHatchback.includes('%') || tagHatchback.includes('.') || tagHatchback.includes('!') || tagHatchback.includes('?') || tagHatchback.includes('"') || tagHatchback.includes('\'') || tagHatchback.includes('&') || tagHatchback.includes('|') || tagHatchback.includes('\\') || tagHatchback.includes('§') || tagHatchback.includes('¶') || tagHatchback.includes('+') || tagHatchback.includes('-') || tagHatchback.includes('=') || tagHatchback.includes('*') || tagHatchback.includes('/')) {
         textHashtags.setCustomValidity('ХэшТеги не должны содержать спецсимволы (#, @, $ и т. п.), знаки пунктуации, эмодзи и т.п.');
-      } else if (tagArr.length + 1 < minValue) {
+      } else if (tagHatchback.length + 1 < minValue) {
         textHashtags.setCustomValidity('хеш-тег не может состоять только из одной решётки');
-      } else if (tagArr.length + 1 > maxValue) {
+      } else if (tagHatchback.length + 1 > maxValue) {
         textHashtags.setCustomValidity('максимальная длина одного хэш-тега 20 символов, включая решётку');
       } else if (arr.length > newArr.length) {
         textHashtags.setCustomValidity('хэштеги не должны повторяться');
@@ -341,6 +347,30 @@ textHashtags.addEventListener('input', function () {
       }
     }
   };
+
+  // const checkValidationInput1 = function (newArr = generateUnicArr(), arr = tagsArr) {
+  //   for (let i = 0; i < arr.length; i++) {
+
+  //     let tagArr = arr[i].split('');
+  //     let sharp = tagArr.shift();
+
+  //     if (sharp !== String('#')) {
+  //       textHashtags.setCustomValidity('ХэшТеги должны начинаться с "#"');
+  //     } else if (tagArr.includes('#') || tagArr.includes('@') || tagArr.includes('$') || tagArr.includes('<') || tagArr.includes('>') || tagArr.includes('%') || tagArr.includes('.') || tagArr.includes('!') || tagArr.includes('?') || tagArr.includes('"') || tagArr.includes('\'') || tagArr.includes('&') || tagArr.includes('|') || tagArr.includes('\\') || tagArr.includes('§') || tagArr.includes('¶') || tagArr.includes('+') || tagArr.includes('-') || tagArr.includes('=') || tagArr.includes('*') || tagArr.includes('/')) {
+  //       textHashtags.setCustomValidity('ХэшТеги не должны содержать спецсимволы (#, @, $ и т. п.), знаки пунктуации, эмодзи и т.п.');
+  //     } else if (tagArr.length + 1 < minValue) {
+  //       textHashtags.setCustomValidity('хеш-тег не может состоять только из одной решётки');
+  //     } else if (tagArr.length + 1 > maxValue) {
+  //       textHashtags.setCustomValidity('максимальная длина одного хэш-тега 20 символов, включая решётку');
+  //     } else if (arr.length > newArr.length) {
+  //       textHashtags.setCustomValidity('хэштеги не должны повторяться');
+  //     } else if (inputValue.includes(',')) {
+  //       textHashtags.setCustomValidity('ХэшТеги должны разделяться пробелом, а не ","');
+  //     } else {
+  //       textHashtags.setCustomValidity('');
+  //     }
+  //   }
+  // };
 
   checkValidationInput();
 });
