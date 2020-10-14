@@ -215,77 +215,75 @@ controlBigger.addEventListener('click', function () {
 
 // наложение эффекта на изображение
 const effectList = imgUploadForm.querySelector('.effects__list');
-const UploadEffectLevel = imgUploadForm.querySelector('.img-upload__effect-level');
-const effectLevelLine = UploadEffectLevel.querySelector('.effect-level__line');
-const effectLevelPin = UploadEffectLevel.querySelector('.effect-level__pin');
-const effectLevelDepth = UploadEffectLevel.querySelector('.effect-level__depth');
+const uploadEffectLevel = imgUploadForm.querySelector('.img-upload__effect-level');
+const effectLevelLine = uploadEffectLevel.querySelector('.effect-level__line');
+const effectLevelPin = uploadEffectLevel.querySelector('.effect-level__pin');
+const effectLevelDepth = uploadEffectLevel.querySelector('.effect-level__depth');
 
-const resetValues = function (evt) {
-  let effect = evt.target.value;
+const MAX_BLUR_VALUE = 4;
+const MAX_BRIGHTNESS_VALUE = 3;
+const MIN_HASHTAG_LENGTH = 2;
+const MAX_HASHTAG_LENGTH = 20;
+
+const setEffect = function (effect, value) {
   imgUploadPreview.className = '';
   imgUploadPreview.classList.add('effects__preview--' + effect);
-  if (effect === 'none') {
-    UploadEffectLevel.classList.add('hidden');
-  } else {
-    UploadEffectLevel.classList.remove('hidden');
-  }
-
-  effectLevelPin.style = "left: " + 100 + "%";
-  effectLevelDepth.style = "width: " + 100 + "%";
 
   switch (effect) {
     case 'chrome':
-      imgUploadPreview.style = "filter: grayscale(" + 1 + ")";
+      imgUploadPreview.style = "filter: grayscale(" + value + ")";
       break;
     case 'sepia':
-      imgUploadPreview.style = "filter: sepia(" + 1 + ")";
+      imgUploadPreview.style = "filter: sepia(" + value + ")";
       break;
-    case 'invert':
-      imgUploadPreview.style = "filter: invert(" + 100 + "%)";
+    case 'marvin':
+      imgUploadPreview.style = "filter: invert(" + (value * 100) + "%)";
       break;
-    case 'blur':
-      imgUploadPreview.style = "filter: blur(" + 3 + "px)";
+    case 'phobos':
+      imgUploadPreview.style = "filter: blur(" + value * MAX_BLUR_VALUE + "px)";
       break;
-    case 'brightness':
-      imgUploadPreview.style = "filter: brightness(" + 3 + ")";
+    case 'heat':
+      imgUploadPreview.style = "filter: brightness(" + value * MAX_BRIGHTNESS_VALUE + ")";
       break;
     default:
       imgUploadPreview.style = "";
       break;
   }
+};
 
-  return effectLevelPin.style;
+let currentEffect = 'none';
+
+const onChangeEffect = function (evt) {
+  let effect = evt.target.value;
+
+  if (effect === 'none') {
+    uploadEffectLevel.classList.add('hidden');
+  } else {
+    uploadEffectLevel.classList.remove('hidden');
+  }
+
+  effectLevelPin.style = "left: " + 100 + "%";
+  effectLevelDepth.style = "width: " + 100 + "%";
+
+  currentEffect = effect;
+
+  setEffect(effect, 1);
 };
 
 effectList.addEventListener('change', function (evt) {
-  resetValues(evt);
+  onChangeEffect(evt);
 });
 
 const getEffectValue = function () {
   const lineWidthInPx = 452;
-  const lineWidthInPercent = 100;
-  const maxBlurValue = 4 / lineWidthInPercent;
-  const maxBrightnessValue = 3 / lineWidthInPercent;
 
   effectLevelLine.addEventListener('mouseup', function (evt) {
     effectLevelPin.blur();
     effectLevelLine.focus();
-    let countValue = Math.floor(evt.offsetX / (lineWidthInPx / lineWidthInPercent));
-    effectLevelPin.style = "left: " + countValue + "%";
-    effectLevelDepth.style = "width: " + countValue + "%";
-
-    if (imgUploadPreview.classList.contains('effects__preview--chrome')) {
-      imgUploadPreview.style = "filter: grayscale(" + countValue / lineWidthInPercent + ")";
-    } else if (imgUploadPreview.classList.contains('effects__preview--sepia')) {
-      imgUploadPreview.style = "filter: sepia(" + countValue / lineWidthInPercent + ")";
-    } else if (imgUploadPreview.classList.contains('effects__preview--marvin')) {
-      imgUploadPreview.style = "filter: invert(" + countValue + "%)";
-    } else if (imgUploadPreview.classList.contains('effects__preview--phobos')) {
-      imgUploadPreview.style = "filter: blur(" + countValue * maxBlurValue + "px)";
-    } else if (imgUploadPreview.classList.contains('effects__preview--heat')) {
-      imgUploadPreview.style = "filter: brightness(" + countValue * maxBrightnessValue + ")";
-    }
-    return effectLevelPin.style;
+    const currentEffectValue = evt.offsetX / lineWidthInPx;
+    effectLevelPin.style = "left: " + Math.floor(currentEffectValue * 100) + "%";
+    effectLevelDepth.style = "width: " + Math.floor(currentEffectValue * 100) + "%";
+    setEffect(currentEffect, currentEffectValue);
   });
 };
 
@@ -311,34 +309,33 @@ const imgUploadDescription = imgUploadText.querySelector('.text__description');
 textHashtags.addEventListener('input', function () {
   const inputValue = textHashtags.value;
   const tagsArr = inputValue.split(' ');
-  const minValue = 2;
-  const maxValue = 20;
 
-  const generateUnicArr = function (arr = tagsArr) {
-    let newArr = [];
-    for (let i = 0; i < arr.length; i++) {
-      let el = arr[i];
-      if (!newArr.includes(el)) {
-        newArr.push(arr[i]);
+
+  const hasDuplicates = function (items) {
+    let unicItems = [];
+    for (let i = 0; i < items.length; i++) {
+      let el = items[i];
+      if (unicItems.includes(el)) {
+        return true;
       }
+      unicItems.push(el);
     }
-    return newArr;
+    return false;
   };
 
-  const checkValidationInput = function (newArr = generateUnicArr(), arr = tagsArr) {
+  const checkValidationInput = function (arr) {
     for (let i = 0; i < arr.length; i++) {
       let tag = arr[i];
-      let sharp = tag.substring(0, 1);
       let tagHatchback = tag.substring(1, tag.length);
-      if (sharp !== '#') {
+      if (tag[0] !== '#') {
         textHashtags.setCustomValidity('ХэшТеги должны начинаться с "#"');
       } else if (tagHatchback.includes('#') || tagHatchback.includes('@') || tagHatchback.includes('$') || tagHatchback.includes('<') || tagHatchback.includes('>') || tagHatchback.includes('%') || tagHatchback.includes('.') || tagHatchback.includes('!') || tagHatchback.includes('?') || tagHatchback.includes('"') || tagHatchback.includes('\'') || tagHatchback.includes('&') || tagHatchback.includes('|') || tagHatchback.includes('\\') || tagHatchback.includes('§') || tagHatchback.includes('¶') || tagHatchback.includes('+') || tagHatchback.includes('-') || tagHatchback.includes('=') || tagHatchback.includes('*') || tagHatchback.includes('/')) {
         textHashtags.setCustomValidity('ХэшТеги не должны содержать спецсимволы (#, @, $ и т. п.), знаки пунктуации, эмодзи и т.п.');
-      } else if (tagHatchback.length + 1 < minValue) {
+      } else if (tag.length < MIN_HASHTAG_LENGTH) {
         textHashtags.setCustomValidity('хеш-тег не может состоять только из одной решётки');
-      } else if (tagHatchback.length + 1 > maxValue) {
+      } else if (tag.length > MAX_HASHTAG_LENGTH) {
         textHashtags.setCustomValidity('максимальная длина одного хэш-тега 20 символов, включая решётку');
-      } else if (arr.length > newArr.length) {
+      } else if (hasDuplicates(arr)) {
         textHashtags.setCustomValidity('хэштеги не должны повторяться');
       } else if (inputValue.includes(',')) {
         textHashtags.setCustomValidity('ХэшТеги должны разделяться пробелом, а не ","');
@@ -348,31 +345,7 @@ textHashtags.addEventListener('input', function () {
     }
   };
 
-  // const checkValidationInput1 = function (newArr = generateUnicArr(), arr = tagsArr) {
-  //   for (let i = 0; i < arr.length; i++) {
-
-  //     let tagArr = arr[i].split('');
-  //     let sharp = tagArr.shift();
-
-  //     if (sharp !== String('#')) {
-  //       textHashtags.setCustomValidity('ХэшТеги должны начинаться с "#"');
-  //     } else if (tagArr.includes('#') || tagArr.includes('@') || tagArr.includes('$') || tagArr.includes('<') || tagArr.includes('>') || tagArr.includes('%') || tagArr.includes('.') || tagArr.includes('!') || tagArr.includes('?') || tagArr.includes('"') || tagArr.includes('\'') || tagArr.includes('&') || tagArr.includes('|') || tagArr.includes('\\') || tagArr.includes('§') || tagArr.includes('¶') || tagArr.includes('+') || tagArr.includes('-') || tagArr.includes('=') || tagArr.includes('*') || tagArr.includes('/')) {
-  //       textHashtags.setCustomValidity('ХэшТеги не должны содержать спецсимволы (#, @, $ и т. п.), знаки пунктуации, эмодзи и т.п.');
-  //     } else if (tagArr.length + 1 < minValue) {
-  //       textHashtags.setCustomValidity('хеш-тег не может состоять только из одной решётки');
-  //     } else if (tagArr.length + 1 > maxValue) {
-  //       textHashtags.setCustomValidity('максимальная длина одного хэш-тега 20 символов, включая решётку');
-  //     } else if (arr.length > newArr.length) {
-  //       textHashtags.setCustomValidity('хэштеги не должны повторяться');
-  //     } else if (inputValue.includes(',')) {
-  //       textHashtags.setCustomValidity('ХэшТеги должны разделяться пробелом, а не ","');
-  //     } else {
-  //       textHashtags.setCustomValidity('');
-  //     }
-  //   }
-  // };
-
-  checkValidationInput();
+  checkValidationInput(tagsArr);
 });
 
 textHashtags.addEventListener('focus', function () {
@@ -390,4 +363,3 @@ imgUploadDescription.addEventListener('focus', function () {
 imgUploadDescription.addEventListener('blur', function () {
   document.addEventListener('keydown', onUploadPopupEscPress);
 });
-
