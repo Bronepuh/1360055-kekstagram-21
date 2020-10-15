@@ -9,6 +9,9 @@ const COMMENT_COUNT = 9;
 
 const pictureList = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+const bigPicture = document.querySelector('.big-picture');
+const socialCommentsList = document.querySelector('.social__comments');
+const bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
 
 let getRandomNumber = function (min, max) {
   let random = Math.floor((Math.random() * (max - min)) + min);
@@ -78,11 +81,7 @@ const renderPhotos = function (pictures) {
 const pictures = generatePhotos();
 renderPhotos(pictures);
 
-const bigPicture = document.querySelector('.big-picture');
-
 // bigPicture.classList.remove('hidden');
-
-const socialCommentsList = document.querySelector('.social__comments');
 
 const generateCommentElement = function (comment) {
   const li = document.createElement('li');
@@ -123,7 +122,58 @@ const createNewPicture = function (picture) {
 };
 
 // заполняю комментари из моки №1
-createNewPicture(pictures[0]);
+// createNewPicture(pictures[0]);
+
+// ======================================================================================== module4-task2
+
+for (let i = 0; i < PHOTOS_COUNT; i++) {
+  let picture = pictures[i];
+  createNewPicture(picture);
+}
+
+const onBigPictureEscPress = function (evt) {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    bigPicture.classList.add('hidden');
+    body.classList.remove('modal-open');
+  }
+};
+
+const onBigPictureEnterPress = function (evt) {
+  if (evt.key === 'Enter') {
+    evt.preventDefault();
+    let src = evt.target.querySelector('img').src;
+    bigPicture.querySelector('img').src = src;
+    bigPicture.classList.remove('hidden');
+    body.classList.add('modal-open');
+    document.addEventListener('keydown', onBigPictureEscPress);
+  }
+};
+
+const openBigPicture = function (evt) {
+  let src = evt.target.src;
+  bigPicture.querySelector('img').src = src;
+  bigPicture.classList.remove('hidden');
+  body.classList.add('modal-open');
+  document.addEventListener('keydown', onBigPictureEscPress);
+};
+
+pictureList.addEventListener('click', function (evt) {
+  openBigPicture(evt);
+});
+
+pictureList.addEventListener('keydown', onBigPictureEnterPress);
+
+const closeBigPicture = function () {
+  bigPicture.classList.add('hidden');
+  document.removeEventListener('keydown', onBigPictureEscPress);
+};
+
+bigPictureClose.addEventListener('click', function () {
+  closeBigPicture();
+});
+
+// =========================================================================================================
 
 const socialCommentCount = bigPicture.querySelector('.social__comment-count');
 socialCommentCount.classList.add('hidden');
