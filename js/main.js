@@ -10,8 +10,13 @@ const COMMENT_COUNT = 9;
 const pictureList = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const bigPicture = document.querySelector('.big-picture');
+// const bigPictureSocial = document.querySelector('.big-picture__social');
+// console.log(bigPictureSocial);
 const socialCommentsList = document.querySelector('.social__comments');
 const bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
+const socialCommentCount = bigPicture.querySelector('.social__comment-count');
+const commentsLoader = bigPicture.querySelector('.comments-loader');
+const body = document.querySelector('body');
 
 let getRandomNumber = function (min, max) {
   let random = Math.floor((Math.random() * (max - min)) + min);
@@ -66,8 +71,57 @@ const renderPhoto = function (picture) {
   pictureSimularItem.querySelector('.picture__img').src = picture.photo;
   pictureSimularItem.querySelector('.picture__likes').textContent = picture.likes;
   pictureSimularItem.querySelector('.picture__comments').textContent = picture.comments.length;
+
+  // ======================================================================================== module4-task2
+
+  const onBigPictureEscPress = function (evt) {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      bigPicture.classList.add('hidden');
+      body.classList.remove('modal-open');
+    }
+  };
+
+  const onBigPictureEnterPress = function (evt) {
+    if (evt.key === 'Enter') {
+      evt.preventDefault();
+      createNewPicture(picture);
+      openBigPicture();
+    }
+  };
+
+  const openBigPicture = function () {
+    bigPicture.classList.remove('hidden');
+    body.classList.add('modal-open');
+    document.addEventListener('keydown', onBigPictureEscPress);
+  };
+
+  pictureSimularItem.querySelector('.picture__img').addEventListener('click', function () {
+    createNewPicture(picture);
+    openBigPicture();
+  });
+
+  pictureSimularItem.querySelector('p').addEventListener('click', function () {
+    createNewPicture(picture);
+    openBigPicture();
+  });
+
+  pictureSimularItem.addEventListener('keydown', onBigPictureEnterPress);
+
+  const closeBigPicture = function () {
+    bigPicture.classList.add('hidden');
+    body.classList.remove('modal-open');
+    document.removeEventListener('keydown', onBigPictureEscPress);
+  };
+
+  bigPictureClose.addEventListener('click', function () {
+    closeBigPicture();
+  });
+
   return pictureSimularItem;
 };
+
+// =========================================================================================================
 
 const renderPhotos = function (pictures) {
   let fragment = document.createDocumentFragment();
@@ -124,62 +178,9 @@ const createNewPicture = function (picture) {
 // заполняю комментари из моки №1
 // createNewPicture(pictures[0]);
 
-// ======================================================================================== module4-task2
-
-for (let i = 0; i < PHOTOS_COUNT; i++) {
-  let picture = pictures[i];
-  createNewPicture(picture);
-}
-
-const onBigPictureEscPress = function (evt) {
-  if (evt.key === 'Escape') {
-    evt.preventDefault();
-    bigPicture.classList.add('hidden');
-    body.classList.remove('modal-open');
-  }
-};
-
-const onBigPictureEnterPress = function (evt) {
-  if (evt.key === 'Enter') {
-    evt.preventDefault();
-    let src = evt.target.querySelector('img').src;
-    bigPicture.querySelector('img').src = src;
-    bigPicture.classList.remove('hidden');
-    body.classList.add('modal-open');
-    document.addEventListener('keydown', onBigPictureEscPress);
-  }
-};
-
-const openBigPicture = function (evt) {
-  let src = evt.target.src;
-  bigPicture.querySelector('img').src = src;
-  bigPicture.classList.remove('hidden');
-  body.classList.add('modal-open');
-  document.addEventListener('keydown', onBigPictureEscPress);
-};
-
-pictureList.addEventListener('click', function (evt) {
-  openBigPicture(evt);
-});
-
-pictureList.addEventListener('keydown', onBigPictureEnterPress);
-
-const closeBigPicture = function () {
-  bigPicture.classList.add('hidden');
-  document.removeEventListener('keydown', onBigPictureEscPress);
-};
-
-bigPictureClose.addEventListener('click', function () {
-  closeBigPicture();
-});
-
-// =========================================================================================================
-
-const socialCommentCount = bigPicture.querySelector('.social__comment-count');
 socialCommentCount.classList.add('hidden');
-const commentsLoader = bigPicture.querySelector('.comments-loader');
 commentsLoader.classList.add('hidden');
-const body = document.querySelector('body');
+
 // body.classList.add('modal-open');
 
 // module4-task1
