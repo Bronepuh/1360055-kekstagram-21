@@ -9,6 +9,14 @@ const COMMENT_COUNT = 9;
 
 const pictureList = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+const bigPicture = document.querySelector('.big-picture');
+// const bigPictureSocial = document.querySelector('.big-picture__social');
+// console.log(bigPictureSocial);
+const socialCommentsList = document.querySelector('.social__comments');
+const bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
+const socialCommentCount = bigPicture.querySelector('.social__comment-count');
+const commentsLoader = bigPicture.querySelector('.comments-loader');
+const body = document.querySelector('body');
 
 let getRandomNumber = function (min, max) {
   let random = Math.floor((Math.random() * (max - min)) + min);
@@ -63,8 +71,57 @@ const renderPhoto = function (picture) {
   pictureSimularItem.querySelector('.picture__img').src = picture.photo;
   pictureSimularItem.querySelector('.picture__likes').textContent = picture.likes;
   pictureSimularItem.querySelector('.picture__comments').textContent = picture.comments.length;
+
+  // ======================================================================================== module4-task2
+
+  const onBigPictureEscPress = function (evt) {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      bigPicture.classList.add('hidden');
+      body.classList.remove('modal-open');
+    }
+  };
+
+  const onBigPictureEnterPress = function (evt) {
+    if (evt.key === 'Enter') {
+      evt.preventDefault();
+      createNewPicture(picture);
+      openBigPicture();
+    }
+  };
+
+  const openBigPicture = function () {
+    bigPicture.classList.remove('hidden');
+    body.classList.add('modal-open');
+    document.addEventListener('keydown', onBigPictureEscPress);
+  };
+
+  pictureSimularItem.querySelector('.picture__img').addEventListener('click', function () {
+    createNewPicture(picture);
+    openBigPicture();
+  });
+
+  pictureSimularItem.querySelector('p').addEventListener('click', function () {
+    createNewPicture(picture);
+    openBigPicture();
+  });
+
+  pictureSimularItem.addEventListener('keydown', onBigPictureEnterPress);
+
+  const closeBigPicture = function () {
+    bigPicture.classList.add('hidden');
+    body.classList.remove('modal-open');
+    document.removeEventListener('keydown', onBigPictureEscPress);
+  };
+
+  bigPictureClose.addEventListener('click', function () {
+    closeBigPicture();
+  });
+
   return pictureSimularItem;
 };
+
+// =========================================================================================================
 
 const renderPhotos = function (pictures) {
   let fragment = document.createDocumentFragment();
@@ -78,11 +135,7 @@ const renderPhotos = function (pictures) {
 const pictures = generatePhotos();
 renderPhotos(pictures);
 
-const bigPicture = document.querySelector('.big-picture');
-
 // bigPicture.classList.remove('hidden');
-
-const socialCommentsList = document.querySelector('.social__comments');
 
 const generateCommentElement = function (comment) {
   const li = document.createElement('li');
@@ -123,13 +176,11 @@ const createNewPicture = function (picture) {
 };
 
 // заполняю комментари из моки №1
-createNewPicture(pictures[0]);
+// createNewPicture(pictures[0]);
 
-const socialCommentCount = bigPicture.querySelector('.social__comment-count');
 socialCommentCount.classList.add('hidden');
-const commentsLoader = bigPicture.querySelector('.comments-loader');
 commentsLoader.classList.add('hidden');
-const body = document.querySelector('body');
+
 // body.classList.add('modal-open');
 
 // module4-task1
