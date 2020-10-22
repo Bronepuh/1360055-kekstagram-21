@@ -1,6 +1,5 @@
 'use strict';
 (function () {
-  const body = document.querySelector('body');
   const pictureList = document.querySelector('.pictures');
   const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   const uploadFileInput = window.form.uploadForm.querySelector('#upload-file');
@@ -49,6 +48,5 @@
 
   window.gallery = {
     render: render,
-    body: body,
   };
 })();

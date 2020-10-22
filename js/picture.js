@@ -11,19 +11,19 @@
     if (evt.key === 'Escape') {
       evt.preventDefault();
       bigPicture.classList.add('hidden');
-      window.gallery.body.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
     }
   };
 
   const closeBigPicture = function () {
     bigPicture.classList.add('hidden');
-    window.gallery.body.classList.remove('modal-open');
+    document.body.classList.remove('modal-open');
     document.removeEventListener('keydown', onBigPictureEscPress);
   };
 
   const openBigPicture = function () {
     bigPicture.classList.remove('hidden');
-    window.gallery.body.classList.add('modal-open');
+    document.body.classList.add('modal-open');
     document.addEventListener('keydown', onBigPictureEscPress);
   };
 

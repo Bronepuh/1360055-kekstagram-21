@@ -18,13 +18,13 @@
 
   const openUploadPopup = function () {
     imgUploadOverlay.classList.remove('hidden');
-    window.gallery.body.classList.add('modal-open');
+    document.body.classList.add('modal-open');
     document.addEventListener('keydown', onUploadPopupEscPress);
   };
 
   const closeUploadPopup = function () {
     imgUploadOverlay.classList.add('hidden');
-    window.gallery.body.classList.remove('modal-open');
+    document.body.classList.remove('modal-open');
     document.removeEventListener('keydown', onUploadPopupEscPress);
   };
 
@@ -166,6 +166,5 @@
 
   window.preview = {
     show: openUploadPopup,
-    onUploadPopupEscPress: onUploadPopupEscPress,
   };
 })();
