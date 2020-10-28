@@ -6,7 +6,7 @@
 
   const renderPhoto = function (picture) {
     let pictureSimularItem = pictureTemplate.cloneNode(true);
-    pictureSimularItem.querySelector('.picture__img').src = picture.photo;
+    pictureSimularItem.querySelector('.picture__img').src = picture.url;
     pictureSimularItem.querySelector('.picture__likes').textContent = picture.likes;
     pictureSimularItem.querySelector('.picture__comments').textContent = picture.comments.length;
 

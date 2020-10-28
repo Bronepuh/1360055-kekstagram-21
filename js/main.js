@@ -1,4 +1,9 @@
 'use strict';
 (function () {
-  window.gallery.render(window.data);
+  window.load(function (clientData) {
+
+    window.gallery.render(clientData);
+
+  });
+
 })();
