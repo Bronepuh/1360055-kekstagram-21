@@ -63,7 +63,7 @@
   };
 
   const createNewPicture = function (picture) {
-    bigPicture.querySelector('img').src = picture.photo;
+    bigPicture.querySelector('img').src = picture.url;
     bigPicture.querySelector('.likes-count').textContent = picture.likes;
     bigPicture.querySelector('.comments-count').textContent = picture.comments.length;
     bigPicture.querySelector('.social__caption').textContent = picture.description;
