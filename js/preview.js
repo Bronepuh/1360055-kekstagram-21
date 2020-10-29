@@ -80,5 +80,6 @@
 
   window.preview = {
     show: openUploadPopup,
+    hidden: closeUploadPopup,
   };
 })();
