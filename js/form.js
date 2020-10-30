@@ -9,6 +9,10 @@
   const textHashtags = imgUploadText.querySelector('.text__hashtags');
   const imgUploadDescription = imgUploadText.querySelector('.text__description');
 
+  const main = document.querySelector('main');
+  const successTemplate = document.querySelector('#success').content.querySelector('.success');
+  const errorTemplate = document.querySelector('#error').content.querySelector('.error');
+
   textHashtags.addEventListener('input', function () {
     const inputValue = textHashtags.value;
     const tagsArr = inputValue.split(' ');
@@ -67,7 +71,46 @@
     document.addEventListener('keydown', window.preview.onUploadPopupEscPress);
   });
 
+  const createSuccessMessage = function () {
+    let successSimularItem = successTemplate.cloneNode(true);
+
+    document.body.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        successSimularItem.remove();
+      }
+    });
+    document.body.addEventListener('click', function () {
+      successSimularItem.remove();
+    });
+    main.append(successSimularItem);
+  };
+
+  const createErrorMessage = function (message) {
+    let errorSimularItem = errorTemplate.cloneNode(true);
+    errorSimularItem.querySelector('.error__title').textContent = message;
+
+    document.body.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        errorSimularItem.remove();
+      }
+    });
+    document.body.addEventListener('click', function () {
+      errorSimularItem.remove();
+    });
+    main.append(errorSimularItem);
+  };
+
+  const resetValues = function () {
+    textHashtags.value = '';
+    imgUploadDescription.value = '';
+  };
+
   window.form = {
     uploadForm: imgUploadForm,
+    resetValues: resetValues,
+    createSuccessMessage: createSuccessMessage,
+    createErrorMessage: createErrorMessage,
   };
 })();

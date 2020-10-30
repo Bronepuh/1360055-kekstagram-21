@@ -4,11 +4,11 @@
   // ползунок
 
   const uploadEffectLevel = window.form.uploadForm.querySelector('.img-upload__effect-level');
+  const effectLevelLine = uploadEffectLevel.querySelector('.effect-level__line');
   const effectLevelPin = uploadEffectLevel.querySelector('.effect-level__pin');
   const effectLevelDepth = uploadEffectLevel.querySelector('.effect-level__depth');
 
   const MIN_SLIDER_VALUE = 0;
-  const MAX_SLIDER_VALUE = 452;
 
   const sliderControl = function (downEvt) {
     downEvt.preventDefault();
@@ -31,18 +31,18 @@
         y: moveEvt.clientY
       };
 
-      const sliderValue = (effectLevelPin.offsetLeft - shift.x);
+      const sliderValue = effectLevelPin.offsetLeft - shift.x;
 
       effectLevelPin.style.left = sliderValue + 'px';
       effectLevelDepth.style.width = effectLevelPin.style.left;
 
       if (sliderValue <= MIN_SLIDER_VALUE) {
         effectLevelPin.style.left = 0 + 'px';
-      } else if (sliderValue >= MAX_SLIDER_VALUE) {
-        effectLevelPin.style.left = 452 + 'px';
+      } else if (sliderValue >= effectLevelLine.clientWidth) {
+        effectLevelPin.style.left = effectLevelLine.clientWidth + 'px';
       }
 
-      const currentEffectValue = sliderValue / MAX_SLIDER_VALUE;
+      const currentEffectValue = effectLevelPin.offsetLeft / effectLevelLine.clientWidth;
 
       setEffect(currentEffect, currentEffectValue);
 
@@ -117,5 +117,4 @@
   effectList.addEventListener('change', function (evt) {
     onChangeEffect(evt);
   });
-
 })();
