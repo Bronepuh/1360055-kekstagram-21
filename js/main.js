@@ -2,7 +2,7 @@
 (function () {
 
   window.form.uploadForm.addEventListener('submit', function (evt) {
-    window.xhr.save(new FormData(window.form.uploadForm),
+    window.backend.save(new FormData(window.form.uploadForm),
         function () {
           window.preview.hidden();
           window.form.resetValues();
@@ -19,7 +19,7 @@
     evt.preventDefault();
   });
 
-  window.xhr.load(function (clientData) {
+  window.backend.load(function (clientData) {
     window.gallery.render(clientData);
   });
 

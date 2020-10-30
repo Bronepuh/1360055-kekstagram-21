@@ -117,21 +117,4 @@
   effectList.addEventListener('change', function (evt) {
     onChangeEffect(evt);
   });
-
 })();
-
-
-// slider.js
-// window.slider = {
-// setCallback: function(callback) {
-// callback(currentEffectValue);
-// }
-
-// apply-effect.js
-// const setEffect = function(effect) {
-// return function(effectValue) {
-// applyFilter(effect, effectValue);
-// }
-// const callback = setEffect(newFilter);
-// window.slider.init(callback);
-// }

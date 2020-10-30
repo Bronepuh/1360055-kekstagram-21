@@ -28,8 +28,6 @@
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
-    // xhr.timeout = TIMEOUT_IN_MS;
-
     xhr.send();
   };
 
@@ -58,7 +56,7 @@
     xhr.send(data);
   };
 
-  window.xhr = {
+  window.backend = {
     load: load,
     save: save,
   };
