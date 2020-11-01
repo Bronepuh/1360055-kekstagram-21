@@ -21,6 +21,9 @@
 
   window.backend.load(function (clientData) {
     window.gallery.render(clientData);
+    window.imgFilters.filterForm.classList.remove('img-filters--inactive');
+    window.imgFilters.randomFilter();
+    window.imgFilters.defaultFilter();
+    window.imgFilters.discussedFilter();
   });
-
 })();
