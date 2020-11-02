@@ -12,6 +12,7 @@
 
       const cb = function () {
         window.backend.load(function (clientData) {
+
           const newData = clientData;
           const pictures = document.querySelectorAll('.picture');
 
@@ -32,7 +33,9 @@
           window.gallery.render(getNewData());
         });
       };
-      window.debounce(cb);
+
+      const getRandomFilter = window.debounce(cb);
+      getRandomFilter();
 
     });
   };
@@ -52,7 +55,10 @@
           window.gallery.render(clientData);
         });
       };
-      window.debounce(cb);
+
+      const getDefaultFilter = window.debounce(cb);
+      getDefaultFilter();
+
     });
   };
 
@@ -86,7 +92,9 @@
           }));
         });
       };
-      window.debounce(cb);
+
+      const getDiscussedFilter = window.debounce(cb);
+      getDiscussedFilter();
 
     });
   };
