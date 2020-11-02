@@ -1,10 +1,11 @@
 'use strict';
 (function () {
   const DEBOUNCE_INTERVAL = 500; // ms
-  let lastTimeout;
 
-  window.debounce = function (cb) {
-    return function () {
+  const getFilter = function () {
+    let lastTimeout = null;
+
+    return function (cb) {
       if (lastTimeout) {
         clearTimeout(lastTimeout);
       }
@@ -13,4 +14,6 @@
       }, DEBOUNCE_INTERVAL);
     };
   };
+
+  window.debounce = getFilter();
 })();
