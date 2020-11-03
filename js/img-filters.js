@@ -5,15 +5,22 @@
   const filterRandom = imgFilters.querySelector('#filter-random');
   const filterDiscussed = imgFilters.querySelector('#filter-discussed');
 
+  const removePictures = function () {
+    const pictures = document.querySelectorAll('.picture');
+    pictures.forEach(function (element) {
+      element.remove();
+    });
+  };
+
   const applyRandomFilter = function (clientData) {
     filterRandom.addEventListener('click', function () {
       resetActiveClass();
       filterRandom.classList.add('img-filters__button--active');
 
-      const cb = function () {
+      const getRandomPhotos = function () {
 
         const newData = clientData;
-        const pictures = document.querySelectorAll('.picture');
+
 
         const getNewData = function (arr = newData) {
           const MAX_PHOTO_SHOW = 10;
@@ -27,13 +34,12 @@
           }
           return newArray;
         };
-        pictures.forEach(function (element) {
-          element.remove();
-        });
+
+        removePictures();
         window.gallery.render(getNewData());
       };
 
-      window.debounce(cb);
+      window.debounce(getRandomPhotos);
 
     });
   };
@@ -43,15 +49,12 @@
       resetActiveClass();
       filterDefault.classList.add('img-filters__button--active');
 
-      const cb = function () {
-        const pictures = document.querySelectorAll('.picture');
-        pictures.forEach(function (element) {
-          element.remove();
-        });
+      const getDefaultPhotos = function () {
+        removePictures();
         window.gallery.render(clientData);
       };
 
-      window.debounce(cb);
+      window.debounce(getDefaultPhotos);
 
     });
   };
@@ -61,30 +64,15 @@
       resetActiveClass();
       filterDiscussed.classList.add('img-filters__button--active');
 
-      const cb = function () {
-        const pictures = document.querySelectorAll('.picture');
-        pictures.forEach(function (element) {
-          element.remove();
-        });
+      const getDiscussedPhotos = function () {
+        removePictures();
 
-        const comparator = function (left, right) {
-          if (left > right) {
-            return 1;
-          } else if (left < right) {
-            return -1;
-          } else {
-            return 0;
-          }
-        };
-
-        window.gallery.render(clientData.sort(function (left, right) {
-          let diff = comparator(right.comments.length, left.comments.length);
-
-          return diff;
+        window.gallery.render(clientData.sort(function (photo1, photo2) {
+          return photo2.comments.length - photo1.comments.length;
         }));
       };
 
-      window.debounce(cb);
+      window.debounce(getDiscussedPhotos);
 
     });
   };

@@ -2,7 +2,7 @@
 (function () {
   const DEBOUNCE_INTERVAL = 500; // ms
 
-  const getFilter = function () {
+  const applyDebounce = function () {
     let lastTimeout = null;
 
     return function (cb) {
@@ -15,5 +15,5 @@
     };
   };
 
-  window.debounce = getFilter();
+  window.debounce = applyDebounce();
 })();
