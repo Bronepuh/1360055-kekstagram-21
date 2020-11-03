@@ -1,9 +1,8 @@
 'use strict';
 (function () {
   const imgFilters = document.querySelector('.img-filters');
-  const filterDefault = imgFilters.querySelector('#filter-default');
-  const filterRandom = imgFilters.querySelector('#filter-random');
-  const filterDiscussed = imgFilters.querySelector('#filter-discussed');
+  const imgForm = document.querySelector('.img-filters__form');
+  const MAX_RANDOM_PHOTOS = 10;
 
   const removePictures = function () {
     const pictures = document.querySelectorAll('.picture');
@@ -12,82 +11,63 @@
     });
   };
 
-  const applyRandomFilter = function (clientData) {
-    filterRandom.addEventListener('click', function () {
-      resetActiveClass();
-      filterRandom.classList.add('img-filters__button--active');
+  const getRandomPhotos = function (photos) {
+    let randomPhotos = [];
+    while (randomPhotos.length < MAX_RANDOM_PHOTOS) {
+      const newImg = photos[window.util.random(0, photos.length)];
+      if (!randomPhotos.includes(newImg)) {
+        randomPhotos.push(newImg);
+      }
+    }
 
-      const getRandomPhotos = function () {
-
-        const newData = clientData;
-
-
-        const getNewData = function (arr = newData) {
-          const MAX_PHOTO_SHOW = 10;
-
-          let newArray = [];
-          while (newArray.length < MAX_PHOTO_SHOW) {
-            const newImg = arr[window.util.random(0, newData.length)];
-            if (!newArray.includes(newImg)) {
-              newArray.push(newImg);
-            }
-          }
-          return newArray;
-        };
-
-        removePictures();
-        window.gallery.render(getNewData());
-      };
-
-      window.debounce(getRandomPhotos);
-
-    });
+    return randomPhotos;
   };
 
-  const applyDefaultFilter = function (clientData) {
-    filterDefault.addEventListener('click', function () {
-      resetActiveClass();
-      filterDefault.classList.add('img-filters__button--active');
-
-      const getDefaultPhotos = function () {
-        removePictures();
-        window.gallery.render(clientData);
-      };
-
-      window.debounce(getDefaultPhotos);
-
-    });
+  const rerender = function (photos) {
+    removePictures();
+    window.gallery.render(photos);
   };
 
-  const applyDiscussedFilter = function (clientData) {
-    filterDiscussed.addEventListener('click', function () {
-      resetActiveClass();
-      filterDiscussed.classList.add('img-filters__button--active');
-
-      const getDiscussedPhotos = function () {
-        removePictures();
-
-        window.gallery.render(clientData.sort(function (photo1, photo2) {
+  const applyFilter = function (clientData, type) {
+    switch (type) {
+      case 'filter-random':
+        const randomPhotos = getRandomPhotos(clientData);
+        rerender(randomPhotos);
+        break;
+      case 'filter-discussed':
+        const newData = clientData.slice();
+        const mostDiscussedPhotos = newData.sort(function (photo1, photo2) {
           return photo2.comments.length - photo1.comments.length;
-        }));
-      };
-
-      window.debounce(getDiscussedPhotos);
-
-    });
+        });
+        rerender(mostDiscussedPhotos);
+        break;
+      default:
+        rerender(clientData);
+        break;
+    }
   };
 
-  const resetActiveClass = function () {
-    filterDefault.classList.remove('img-filters__button--active');
-    filterDiscussed.classList.remove('img-filters__button--active');
-    filterRandom.classList.remove('img-filters__button--active');
+  const bindFilters = function (clientData) {
+    const debouncedApplyFilter = window.debounce(function (filterType) {
+      applyFilter(clientData, filterType);
+    });
+
+    imgForm.addEventListener('click', function (evt) {
+      if (!evt.target.classList.contains('img-filters__button')) {
+        return;
+      }
+      const button = evt.target;
+      const filterType = button.id;
+      const activeButton = imgForm.querySelector('.img-filters__button--active');
+      activeButton.classList.remove('img-filters__button--active');
+      button.classList.add('img-filters__button--active');
+      debouncedApplyFilter(filterType);
+    });
   };
 
   window.imgFilters = {
     filterForm: imgFilters,
-    randomFilter: applyRandomFilter,
-    defaultFilter: applyDefaultFilter,
-    discussedFilter: applyDiscussedFilter,
+    bindFilters: bindFilters,
   };
 
 })();
