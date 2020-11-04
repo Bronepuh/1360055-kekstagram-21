@@ -69,13 +69,48 @@
     bigPicture.querySelector('.social__caption').textContent = picture.description;
     socialCommentsList.innerHTML = '';
     socialCommentsList.append(generateCommentList(picture.comments));
+
+    const nodeList = socialCommentsList.querySelectorAll('.social__comment');
+
+    const hideNode = function () {
+      nodeList.forEach(function (element) {
+        element.classList.add('hidden');
+      });
+    };
+
+    const showComments = function (commentsCount) {
+      hideNode();
+      for (let i = 0; i < commentsCount; i++) {
+        nodeList[i].classList.remove('hidden');
+      }
+    };
+
+    const commensShow = 5;
+    let commentsCount = 0;
+
+    if (nodeList.length < commensShow) {
+      showComments(nodeList.length);
+      commentsLoader.classList.add('hidden');
+    } else {
+      showComments(commensShow);
+      commentsCount = commentsCount + commensShow;
+      commentsLoader.addEventListener('click', function () {
+        commentsCount = commentsCount + commensShow;
+        let dif = commentsCount - nodeList.length;
+        if (commentsCount < nodeList.length) {
+          showComments(commentsCount);
+        } else {
+          showComments(commentsCount - dif);
+        }
+      });
+    }
   };
 
   // заполняю комментари из моки №1
   // createNewPicture(pictures[0]);
 
   socialCommentCount.classList.add('hidden');
-  commentsLoader.classList.add('hidden');
+  // commentsLoader.classList.add('hidden');
 
   window.picture = {
     show: function (picture) {
