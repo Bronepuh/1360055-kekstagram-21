@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  // module4-task1
   // открытие и закрытие окна для редактирования загружаемой фотографии
 
   const uploadFileInput = window.form.uploadForm.querySelector('#upload-file');
@@ -48,7 +47,7 @@
   };
 
   const changeSizePreview = function () {
-    imgUploadPreview.style = 'transform: scale(' + getNumberOfInput() / 100 + ')';
+    imgUploadPreview.style = 'transform: scale(' + getNumberOfInput() / MAX_VALUE + ')';
   };
 
   const pushControlSmaller = function (value = MIN_VALUE) {

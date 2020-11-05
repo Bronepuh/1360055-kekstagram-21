@@ -32,8 +32,6 @@
     closeBigPicture();
   });
 
-  // bigPicture.classList.remove('hidden');
-
   const generateCommentElement = function (comment) {
     const li = document.createElement('li');
     li.classList.add('social__comment');
@@ -86,35 +84,31 @@
       }
     };
 
-    const commensShow = 5;
+    const commentsShow = 5;
     let commentsCount = 0;
 
-    if (nodeList.length < commensShow) {
+    if (nodeList.length < commentsShow) {
       showComments(nodeList.length);
 
     } else {
-      showComments(commensShow);
+      showComments(commentsShow);
       commentsLoader.classList.remove('hidden');
-      commentsCount = commentsCount + commensShow;
+      commentsCount = commentsCount + commentsShow;
       commentsLoader.addEventListener('click', function () {
 
-        commentsCount = commentsCount + commensShow;
-        let dif = commentsCount - nodeList.length;
+        commentsCount = commentsCount + commentsShow;
+        let diff = commentsCount - nodeList.length;
         if (commentsCount < nodeList.length) {
           showComments(commentsCount);
         } else {
-          showComments(commentsCount - dif);
+          showComments(commentsCount - diff);
           commentsLoader.classList.add('hidden');
         }
       });
     }
   };
 
-  // заполняю комментари из моки №1
-  // createNewPicture(pictures[0]);
-
   socialCommentCount.classList.add('hidden');
-  // commentsLoader.classList.add('hidden');
 
   window.picture = {
     show: function (picture) {
@@ -122,5 +116,4 @@
       openBigPicture();
     }
   };
-  // window.gallery.body.classList.add('modal-open');
 })();

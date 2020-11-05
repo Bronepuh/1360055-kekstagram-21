@@ -27,6 +27,7 @@
     xhr.addEventListener('timeout', function () {
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
+    xhr.timeout = TIMEOUT_IN_MS;
 
     xhr.send();
   };
@@ -60,5 +61,4 @@
     load: load,
     save: save,
   };
-
 })();

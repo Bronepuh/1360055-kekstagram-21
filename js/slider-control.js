@@ -2,12 +2,10 @@
 
 (function () {
   // ползунок
-
   const uploadEffectLevel = window.form.uploadForm.querySelector('.img-upload__effect-level');
   const effectLevelLine = uploadEffectLevel.querySelector('.effect-level__line');
   const effectLevelPin = uploadEffectLevel.querySelector('.effect-level__pin');
   const effectLevelDepth = uploadEffectLevel.querySelector('.effect-level__depth');
-
   const MIN_SLIDER_VALUE = 0;
 
   const sliderControl = function (downEvt) {
@@ -32,7 +30,6 @@
       };
 
       const sliderValue = effectLevelPin.offsetLeft - shift.x;
-
       effectLevelPin.style.left = sliderValue + 'px';
       effectLevelDepth.style.width = effectLevelPin.style.left;
 
@@ -41,16 +38,13 @@
       } else if (sliderValue >= effectLevelLine.clientWidth) {
         effectLevelPin.style.left = effectLevelLine.clientWidth + 'px';
       }
-
       const currentEffectValue = effectLevelPin.offsetLeft / effectLevelLine.clientWidth;
-
       setEffect(currentEffect, currentEffectValue);
 
     };
 
     const onMouseUp = function (upEvt) {
       upEvt.preventDefault();
-
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
@@ -62,10 +56,8 @@
   effectLevelPin.addEventListener('mousedown', sliderControl);
 
   // наложение эффекта на изображение
-
   const imgUploadPreview = window.form.uploadForm.querySelector('.img-upload__preview img');
   const effectList = window.form.uploadForm.querySelector('.effects__list');
-
   const MAX_BLUR_VALUE = 4;
   const MAX_BRIGHTNESS_VALUE = 3;
 
@@ -96,7 +88,6 @@
   };
 
   let currentEffect = 'none';
-
   const onChangeEffect = function (evt) {
     let effect = evt.target.value;
 
