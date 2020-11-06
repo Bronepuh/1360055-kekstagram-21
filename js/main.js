@@ -23,5 +23,9 @@
     window.gallery.render(clientData);
     window.imgFilters.filterForm.classList.remove('img-filters--inactive');
     window.imgFilters.bindFilters(clientData);
-  });
+  },
+  function (message) {
+    window.form.createErrorMessage(message);
+  }
+  );
 })();
