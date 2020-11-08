@@ -25,7 +25,6 @@
     bigPicture.classList.remove('hidden');
     document.body.classList.add('modal-open');
     document.addEventListener('keydown', onBigPictureEscPress);
-
   };
 
   bigPictureClose.addEventListener('click', function () {
@@ -33,23 +32,21 @@
   });
 
   const generateCommentElement = function (comment) {
-    const li = document.createElement('li');
-    li.classList.add('social__comment');
-
+    const listItem = document.createElement('li');
     const img = document.createElement('img');
+    const p = document.createElement('p');
+
+    listItem.classList.add('social__comment');
     img.classList.add('social__picture');
     img.src = comment.avatar;
     img.alt = comment.name;
     img.style.width = '35px';
     img.style.height = '35px';
-
-    const p = document.createElement('p');
     p.classList.add('social__text');
     p.textContent = comment.message;
-
-    li.append(img);
-    li.append(p);
-    return li;
+    listItem.append(img);
+    listItem.append(p);
+    return listItem;
   };
 
   const generateCommentList = function (comments) {
@@ -62,6 +59,7 @@
   };
 
   const createNewPicture = function (picture) {
+    const COMMENTS_SHOW = 5;
     bigPicture.querySelector('img').src = picture.url;
     bigPicture.querySelector('.likes-count').textContent = picture.likes;
     bigPicture.querySelector('.comments-count').textContent = picture.comments.length;
@@ -84,19 +82,19 @@
       }
     };
 
-    const commentsShow = 5;
     let commentsCount = 0;
 
-    if (nodeList.length < commentsShow) {
+    if (nodeList.length < COMMENTS_SHOW) {
       showComments(nodeList.length);
 
     } else {
-      showComments(commentsShow);
+      showComments(COMMENTS_SHOW);
       commentsLoader.classList.remove('hidden');
-      commentsCount = commentsCount + commentsShow;
-      commentsLoader.addEventListener('click', function () {
+      commentsCount = commentsCount + COMMENTS_SHOW;
 
-        commentsCount = commentsCount + commentsShow;
+      commentsLoader.addEventListener('click', function () {
+        commentsLoader.classList.remove('hidden');
+        commentsCount = commentsCount + COMMENTS_SHOW;
         let diff = commentsCount - nodeList.length;
         if (commentsCount < nodeList.length) {
           showComments(commentsCount);

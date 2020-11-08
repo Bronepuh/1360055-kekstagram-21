@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  let getRandomNumber = function (min, max) {
-    let random = Math.floor((Math.random() * (max - min)) + min);
+  const getRandomNumber = function (min, max) {
+    const random = Math.floor((Math.random() * (max - min)) + min);
     return random;
   };
 

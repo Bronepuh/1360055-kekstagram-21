@@ -1,8 +1,8 @@
 'use strict';
 (function () {
+  const MAX_RANDOM_PHOTOS = 10;
   const imgFilters = document.querySelector('.img-filters');
   const imgForm = document.querySelector('.img-filters__form');
-  const MAX_RANDOM_PHOTOS = 10;
 
   const removePictures = function () {
     const pictures = document.querySelectorAll('.picture');
@@ -19,7 +19,6 @@
         randomPhotos.push(newImg);
       }
     }
-
     return randomPhotos;
   };
 
@@ -51,7 +50,6 @@
     const debouncedApplyFilter = window.debounce(function (filterType) {
       applyFilter(clientData, filterType);
     });
-
     imgForm.addEventListener('click', function (evt) {
       if (!evt.target.classList.contains('img-filters__button')) {
         return;

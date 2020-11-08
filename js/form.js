@@ -8,7 +8,6 @@
   const imgUploadText = imgUploadForm.querySelector('.img-upload__text');
   const textHashtags = imgUploadText.querySelector('.text__hashtags');
   const imgUploadDescription = imgUploadText.querySelector('.text__description');
-
   const main = document.querySelector('main');
   const successTemplate = document.querySelector('#success').content.querySelector('.success');
   const errorTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -16,7 +15,6 @@
   textHashtags.addEventListener('input', function () {
     const inputValue = textHashtags.value;
     const tagsArr = inputValue.split(' ');
-
 
     const hasDuplicates = function (items) {
       let unicItems = [];
@@ -89,7 +87,6 @@
   const createErrorMessage = function (message) {
     let errorSimularItem = errorTemplate.cloneNode(true);
     errorSimularItem.querySelector('.error__title').textContent = message;
-
     document.body.addEventListener('keydown', function (evt) {
       if (evt.key === 'Escape') {
         evt.preventDefault();

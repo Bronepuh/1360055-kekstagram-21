@@ -1,18 +1,20 @@
 'use strict';
 (function () {
 
+  const reset = function () {
+    window.preview.hidden();
+    window.form.resetValues();
+    window.form.uploadForm.reset();
+  };
+
   window.form.uploadForm.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(window.form.uploadForm),
         function () {
-          window.preview.hidden();
-          window.form.resetValues();
-          window.form.uploadForm.reset();
+          reset();
           window.form.createSuccessMessage();
         },
         function (message) {
-          window.preview.hidden();
-          window.form.resetValues();
-          window.form.uploadForm.reset();
+          reset();
           window.form.createErrorMessage(message);
         }
     );

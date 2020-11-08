@@ -16,23 +16,18 @@
         window.picture.show(picture);
       }
     };
-
     pictureSimularItem.querySelector('.picture__img').addEventListener('click', function () {
       window.picture.show(picture);
     });
-
     pictureSimularItem.querySelector('p').addEventListener('click', function () {
       window.picture.show(picture);
     });
-
     pictureSimularItem.addEventListener('keydown', onBigPictureEnterPress);
-
     return pictureSimularItem;
   };
 
   const renderPhotos = function (pictures) {
     let fragment = document.createDocumentFragment();
-
     for (let i = 0; i < pictures.length; i++) {
       fragment.appendChild(renderPhoto(pictures[i]));
     }

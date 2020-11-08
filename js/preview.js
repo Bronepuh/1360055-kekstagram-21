@@ -2,7 +2,6 @@
 
 (function () {
   // открытие и закрытие окна для редактирования загружаемой фотографии
-
   const uploadFileInput = window.form.uploadForm.querySelector('#upload-file');
   const imgUploadOverlay = window.form.uploadForm.querySelector('.img-upload__overlay');
   const imgUploadOverlayCancel = imgUploadOverlay.querySelector('.img-upload__cancel');
@@ -76,9 +75,9 @@
     pushControlBigger();
   });
 
-
   window.preview = {
     show: openUploadPopup,
     hidden: closeUploadPopup,
+    onUploadPopupEscPress: onUploadPopupEscPress,
   };
 })();

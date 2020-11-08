@@ -4,7 +4,6 @@
 
   const debounce = function (cb) {
     let lastTimeout = null;
-
     return function (...args) {
       if (lastTimeout) {
         clearTimeout(lastTimeout);
