@@ -1,6 +1,7 @@
 'use strict';
 (function () {
   const MAX_RANDOM_PHOTOS = 10;
+
   const imgFilters = document.querySelector('.img-filters');
   const imgForm = document.querySelector('.img-filters__form');
 
@@ -12,7 +13,7 @@
   };
 
   const getRandomPhotos = function (photos) {
-    let randomPhotos = [];
+    const randomPhotos = [];
     while (randomPhotos.length < MAX_RANDOM_PHOTOS) {
       const newImg = photos[window.util.random(0, photos.length)];
       if (!randomPhotos.includes(newImg)) {

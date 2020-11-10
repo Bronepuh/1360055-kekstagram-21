@@ -5,7 +5,7 @@
   const uploadFileInput = window.form.uploadForm.querySelector('#upload-file');
 
   const renderPhoto = function (picture) {
-    let pictureSimularItem = pictureTemplate.cloneNode(true);
+    const pictureSimularItem = pictureTemplate.cloneNode(true);
     pictureSimularItem.querySelector('.picture__img').src = picture.url;
     pictureSimularItem.querySelector('.picture__likes').textContent = picture.likes;
     pictureSimularItem.querySelector('.picture__comments').textContent = picture.comments.length;
@@ -27,11 +27,11 @@
   };
 
   const renderPhotos = function (pictures) {
-    let fragment = document.createDocumentFragment();
+    const fragment = document.createDocumentFragment();
     for (let i = 0; i < pictures.length; i++) {
-      fragment.appendChild(renderPhoto(pictures[i]));
+      fragment.append(renderPhoto(pictures[i]));
     }
-    pictureList.appendChild(fragment);
+    pictureList.append(fragment);
   };
 
   const render = function (pictures) {

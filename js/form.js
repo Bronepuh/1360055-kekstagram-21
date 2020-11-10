@@ -4,6 +4,7 @@
   // хэш-теги и текстареа
   const MIN_HASHTAG_LENGTH = 2;
   const MAX_HASHTAG_LENGTH = 20;
+
   const imgUploadForm = document.querySelector('.img-upload__form');
   const imgUploadText = imgUploadForm.querySelector('.img-upload__text');
   const textHashtags = imgUploadText.querySelector('.text__hashtags');
@@ -17,9 +18,9 @@
     const tagsArr = inputValue.split(' ');
 
     const hasDuplicates = function (items) {
-      let unicItems = [];
+      const unicItems = [];
       for (let i = 0; i < items.length; i++) {
-        let el = items[i];
+        const el = items[i];
         if (unicItems.includes(el)) {
           return true;
         }
@@ -30,8 +31,8 @@
 
     const checkValidationInput = function (arr) {
       for (let i = 0; i < arr.length; i++) {
-        let tag = arr[i];
-        let tagHatchback = tag.substring(1, tag.length);
+        const tag = arr[i];
+        const tagHatchback = tag.substring(1, tag.length);
         if (tag[0] !== '#') {
           textHashtags.setCustomValidity('ХэшТеги должны начинаться с "#"');
         } else if (tagHatchback.includes('#') || tagHatchback.includes('@') || tagHatchback.includes('$') || tagHatchback.includes('<') || tagHatchback.includes('>') || tagHatchback.includes('%') || tagHatchback.includes('.') || tagHatchback.includes('!') || tagHatchback.includes('?') || tagHatchback.includes('"') || tagHatchback.includes('\'') || tagHatchback.includes('&') || tagHatchback.includes('|') || tagHatchback.includes('\\') || tagHatchback.includes('§') || tagHatchback.includes('¶') || tagHatchback.includes('+') || tagHatchback.includes('-') || tagHatchback.includes('=') || tagHatchback.includes('*') || tagHatchback.includes('/')) {
@@ -70,7 +71,7 @@
   });
 
   const createSuccessMessage = function () {
-    let successSimularItem = successTemplate.cloneNode(true);
+    const successSimularItem = successTemplate.cloneNode(true);
 
     document.body.addEventListener('keydown', function (evt) {
       if (evt.key === 'Escape') {
@@ -85,7 +86,7 @@
   };
 
   const createErrorMessage = function (message) {
-    let errorSimularItem = errorTemplate.cloneNode(true);
+    const errorSimularItem = errorTemplate.cloneNode(true);
     errorSimularItem.querySelector('.error__title').textContent = message;
     document.body.addEventListener('keydown', function (evt) {
       if (evt.key === 'Escape') {

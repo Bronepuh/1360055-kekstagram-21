@@ -2,8 +2,7 @@
 
 (function () {
   const getRandomNumber = function (min, max) {
-    const random = Math.floor((Math.random() * (max - min)) + min);
-    return random;
+    return Math.floor((Math.random() * (max - min)) + min);
   };
 
   window.util = {

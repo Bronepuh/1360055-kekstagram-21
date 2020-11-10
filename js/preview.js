@@ -1,10 +1,18 @@
 'use strict';
 
 (function () {
-  // открытие и закрытие окна для редактирования загружаемой фотографии
+  const MIN_VALUE = 0;
+  const MAX_VALUE = 100;
+  const STEP = 25;
+
   const uploadFileInput = window.form.uploadForm.querySelector('#upload-file');
   const imgUploadOverlay = window.form.uploadForm.querySelector('.img-upload__overlay');
   const imgUploadOverlayCancel = imgUploadOverlay.querySelector('.img-upload__cancel');
+  const imgUploadScaleContol = window.form.uploadForm.querySelector('.img-upload__scale');
+  const controlSmaller = imgUploadScaleContol.querySelector('.scale__control--smaller');
+  const controlBigger = imgUploadScaleContol.querySelector('.scale__control--bigger');
+  const controlInput = imgUploadScaleContol.querySelector('.scale__control--value');
+  const imgUploadPreview = window.form.uploadForm.querySelector('.img-upload__preview img');
 
   const onUploadPopupEscPress = function (evt) {
     if (evt.key === 'Escape') {
@@ -30,19 +38,8 @@
     closeUploadPopup();
   });
 
-  // Изменение размера изображения
-  const MIN_VALUE = 0;
-  const MAX_VALUE = 100;
-  const STEP = 25;
-  const imgUploadScaleContol = window.form.uploadForm.querySelector('.img-upload__scale');
-  const controlSmaller = imgUploadScaleContol.querySelector('.scale__control--smaller');
-  const controlBigger = imgUploadScaleContol.querySelector('.scale__control--bigger');
-  const controlInput = imgUploadScaleContol.querySelector('.scale__control--value');
-  const imgUploadPreview = window.form.uploadForm.querySelector('.img-upload__preview img');
-
   const getNumberOfInput = function () {
-    let number = parseInt(controlInput.value, 10);
-    return number;
+    return parseInt(controlInput.value, 10);
   };
 
   const changeSizePreview = function () {
@@ -50,7 +47,7 @@
   };
 
   const pushControlSmaller = function (value = MIN_VALUE) {
-    let number = getNumberOfInput();
+    const number = getNumberOfInput();
     if (number > value) {
       controlInput.value = String((number - STEP) + '%');
       changeSizePreview();
@@ -59,7 +56,7 @@
   };
 
   const pushControlBigger = function (value = MAX_VALUE) {
-    let number = getNumberOfInput();
+    const number = getNumberOfInput();
     if (number < value) {
       controlInput.value = String((number + STEP) + '%');
       changeSizePreview();

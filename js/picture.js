@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  const COMMENTS_SHOW = 5;
+
   const bigPicture = document.querySelector('.big-picture');
   const bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
   const socialCommentCount = bigPicture.querySelector('.social__comment-count');
@@ -52,14 +54,13 @@
   const generateCommentList = function (comments) {
     const fragment = document.createDocumentFragment();
     for (let i = 0; i < comments.length; i++) {
-      let newComment = generateCommentElement(comments[i]);
+      const newComment = generateCommentElement(comments[i]);
       fragment.append(newComment);
     }
     return fragment;
   };
 
   const createNewPicture = function (picture) {
-    const COMMENTS_SHOW = 5;
     bigPicture.querySelector('img').src = picture.url;
     bigPicture.querySelector('.likes-count').textContent = picture.likes;
     bigPicture.querySelector('.comments-count').textContent = picture.comments.length;
@@ -95,7 +96,7 @@
       commentsLoader.addEventListener('click', function () {
         commentsLoader.classList.remove('hidden');
         commentsCount = commentsCount + COMMENTS_SHOW;
-        let diff = commentsCount - nodeList.length;
+        const diff = commentsCount - nodeList.length;
         if (commentsCount < nodeList.length) {
           showComments(commentsCount);
         } else {
